@@ -25,9 +25,9 @@ app.use(
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", true);
   //browser options request
   if (req.method === "OPTIONS") {
     res.header(
@@ -42,6 +42,9 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+//public images
+app.use("/images", express.static("images"));
 
 //Routes that handle requests
 app.use("/books", bookRoutes);

@@ -9,10 +9,16 @@ const BooksController = require("../controllers/books");
 
 router.post("/", checkAuth, BooksController.add_book);
 
-router.get("/", (req, res, next) => {
-  res.status(200).json({
-    message: "thats books",
-  });
+router.get("/", checkAuth, (req, res, next) => {
+  try {
+    res.status(200).json({
+      message: req.userData.userId,
+    });
+  } catch (e) {
+    res.status(500).json({
+      message: e,
+    });
+  }
 });
 
 router.get("/:bookId", (req, res, next) => {
