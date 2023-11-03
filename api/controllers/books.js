@@ -16,7 +16,6 @@ exports.add_book = async (req, res, next) => {
       createdBook: result,
     });
   } catch (err) {
-    console.error(err);
     res.status(500).json({
       error: err,
     });

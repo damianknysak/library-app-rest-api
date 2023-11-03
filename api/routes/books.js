@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
-const Product = require("../models/book");
-const Book = require("../models/book");
 const checkAuth = require("../middleware/checkAuth");
 const BooksController = require("../controllers/books");
 

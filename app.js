@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 const bookRoutes = require("./api/routes/books");
 const userRoutes = require("./api/routes/users");
-
+const likedBookRoutes = require("./api/routes/likedbooks");
 //db connection
 
 mongoose.connect(
@@ -50,6 +50,8 @@ app.use("/images", express.static("images"));
 app.use("/books", bookRoutes);
 
 app.use("/users", userRoutes);
+
+app.use("/likedbooks", likedBookRoutes);
 
 //Invalid routes
 app.use((req, res, next) => {
