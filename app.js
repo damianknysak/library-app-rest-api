@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const bookRoutes = require("./api/routes/books");
 const userRoutes = require("./api/routes/users");
 const likedBookRoutes = require("./api/routes/likedbooks");
+const libraryBookRoutes = require("./api/routes/librarybooks");
 //db connection
 
 mongoose.connect(
@@ -52,6 +53,8 @@ app.use("/books", bookRoutes);
 app.use("/users", userRoutes);
 
 app.use("/likedbooks", likedBookRoutes);
+
+app.use("/librarybooks", libraryBookRoutes);
 
 //Invalid routes
 app.use((req, res, next) => {

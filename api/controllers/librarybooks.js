@@ -1,21 +1,21 @@
 const mongoose = require("mongoose");
-const LikedBook = require("../models/likedbook");
+const LibraryBook = require("../models/librarybook");
 
-exports.add_like = async (req, res, next) => {
+exports.add_book_to_library = async (req, res, next) => {
   try {
     if (req.body.bookUrl) {
-      const likedbookcopy = await LikedBook.find({
+      const librarybookcopy = await LibraryBook.find({
         userId: req.userData.userId,
         bookUrl: req.body.bookUrl,
       });
 
-      if (likedbookcopy.length > 0) {
+      if (librarybookcopy.length > 0) {
         return res.status(400).json({
-          message: "Book already liked",
+          message: "Book already added to library",
         });
       }
 
-      const like = new LikedBook({
+      const like = new LibraryBook({
         _id: new mongoose.Types.ObjectId(),
         userId: req.userData.userId,
         bookUrl: req.body.bookUrl,
@@ -24,7 +24,7 @@ exports.add_like = async (req, res, next) => {
       const result = await like.save();
 
       res.status(201).json({
-        message: "Handling POST requests to /likedbooks",
+        message: "Handling POST requests to /LibraryBook",
         createdBook: result,
       });
     } else {
@@ -40,25 +40,25 @@ exports.add_like = async (req, res, next) => {
   }
 };
 
-exports.remove_like = async (req, res, next) => {
+exports.remove_book_from_library = async (req, res, next) => {
   try {
     if (req.body.bookUrl) {
-      const likedbookcopy = await LikedBook.find({
+      const librarybookcopy = await LibraryBook.find({
         userId: req.userData.userId,
         bookUrl: req.body.bookUrl,
       });
 
-      if (likedbookcopy.length > 0) {
-        await LikedBook.deleteMany({
+      if (librarybookcopy.length > 0) {
+        await LibraryBook.deleteMany({
           userId: req.userData.userId,
           bookUrl: req.body.bookUrl,
         });
         return res.status(200).json({
-          message: "Like deleted",
+          message: "Book deleted from library",
         });
       }
       res.status(404).json({
-        message: "Like doesn't exist",
+        message: "Book doesn't exist in library",
       });
     } else {
       res.status(403).json({
@@ -73,13 +73,13 @@ exports.remove_like = async (req, res, next) => {
   }
 };
 
-exports.check_like = async (req, res, next) => {
+exports.check_book_in_library = async (req, res, next) => {
   try {
     console.log("HELLo");
     const bookUrl = req.body.bookUrl;
     const userId = req.userData.userId;
 
-    const likedBook = await LikedBook.find({
+    const librarybook = await LibraryBook.find({
       bookUrl: bookUrl,
       userId: userId,
     });
@@ -89,14 +89,14 @@ exports.check_like = async (req, res, next) => {
         message: "Missing arguments",
       });
     }
-    if (likedBook.length < 1) {
+    if (librarybook.length < 1) {
       return res.status(414).json({
         message: "Not found",
       });
     }
 
     res.status(200).json({
-      message: "User has liked this book",
+      message: "User has this book in library",
     });
   } catch (e) {
     return res.status(500).json({
