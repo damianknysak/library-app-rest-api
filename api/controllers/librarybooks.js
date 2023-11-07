@@ -14,11 +14,6 @@ exports.get_books_from_library = async (req, res, next) => {
       { skip: LIMIT * PAGE, limit: LIMIT }
     );
 
-    if (librarybookcopy.length < 1) {
-      return res.status(404).json({
-        message: "No books in library",
-      });
-    }
     res.status(200).json({
       message: "List of books in /librarybooks",
       page: PAGE < 1 ? 1 : PAGE + 1,

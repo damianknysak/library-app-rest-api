@@ -14,11 +14,6 @@ exports.get_liked_books = async (req, res, next) => {
       { skip: LIMIT * PAGE, limit: LIMIT }
     );
 
-    if (likedbookcopy.length < 1) {
-      return res.status(404).json({
-        message: "No likedbooks",
-      });
-    }
     res.status(200).json({
       message: "List of books in /likedbooks",
       page: PAGE < 1 ? 1 : PAGE + 1,
