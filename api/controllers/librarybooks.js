@@ -1,6 +1,38 @@
 const mongoose = require("mongoose");
 const LibraryBook = require("../models/librarybook");
 
+exports.get_books_from_library = async (req, res, next) => {
+  try {
+    const LIMIT = 15;
+    const PAGE = req.query.page && req.query.page > 1 ? req.query.page - 1 : 0;
+
+    const librarybookcopy = await LibraryBook.find(
+      {
+        userId: req.userData.userId,
+      },
+      null,
+      { skip: LIMIT * PAGE, limit: LIMIT }
+    );
+
+    if (librarybookcopy.length < 1) {
+      return res.status(404).json({
+        message: "No books in library",
+      });
+    }
+    res.status(200).json({
+      message: "List of books in /librarybooks",
+      page: PAGE < 1 ? 1 : PAGE + 1,
+      length: librarybookcopy.length,
+      libraryBooks: librarybookcopy,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: err,
+    });
+  }
+};
+
 exports.add_book_to_library = async (req, res, next) => {
   try {
     if (req.body.bookUrl) {

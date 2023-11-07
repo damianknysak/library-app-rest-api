@@ -1,6 +1,38 @@
 const mongoose = require("mongoose");
 const LikedBook = require("../models/likedbook");
 
+exports.get_liked_books = async (req, res, next) => {
+  try {
+    const LIMIT = 15;
+    const PAGE = req.query.page && req.query.page > 1 ? req.query.page - 1 : 0;
+
+    const likedbookcopy = await LikedBook.find(
+      {
+        userId: req.userData.userId,
+      },
+      null,
+      { skip: LIMIT * PAGE, limit: LIMIT }
+    );
+
+    if (likedbookcopy.length < 1) {
+      return res.status(404).json({
+        message: "No likedbooks",
+      });
+    }
+    res.status(200).json({
+      message: "List of books in /likedbooks",
+      page: PAGE < 1 ? 1 : PAGE + 1,
+      length: likedbookcopy.length,
+      likedBooks: likedbookcopy,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: err,
+    });
+  }
+};
+
 exports.add_like = async (req, res, next) => {
   try {
     if (req.body.bookUrl) {
