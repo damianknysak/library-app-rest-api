@@ -41,11 +41,12 @@ exports.add_like = async (req, res, next) => {
           message: "Book already liked",
         });
       }
-
+      console.log(req.body);
       const like = new LikedBook({
         _id: new mongoose.Types.ObjectId(),
         userId: req.userData.userId,
         bookUrl: req.body.bookUrl,
+        book: req.body.book,
       });
 
       const result = await like.save();

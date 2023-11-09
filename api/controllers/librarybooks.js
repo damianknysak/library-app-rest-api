@@ -46,6 +46,7 @@ exports.add_book_to_library = async (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         userId: req.userData.userId,
         bookUrl: req.body.bookUrl,
+        book: req.body.book,
       });
 
       const result = await like.save();
