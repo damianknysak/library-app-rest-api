@@ -26,12 +26,14 @@ const fileFilter = (req, file, cb) => {
 };
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
+router.get("/:Id", UsersController.get_user);
+
 router.post("/register", AuthController.register);
 
 router.post("/login", AuthController.login);
 
 router.post(
-  "/:Id/addProfileImage",
+  "/addProfileImage",
   checkAuth,
   upload.single("image"),
   UsersController.add_profile_image
