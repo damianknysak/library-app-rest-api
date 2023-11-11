@@ -27,7 +27,7 @@ exports.add_profile_image = async (req, res, next) => {
     if (
       user &&
       user.profileImage &&
-      user.profileImage !== "image/default.png"
+      user.profileImage !== "images/default.png"
     ) {
       // If a previous profile image exists and is not the default one, delete it
       await fs.unlink(user.profileImage);
