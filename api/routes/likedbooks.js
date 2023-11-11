@@ -6,6 +6,8 @@ const LikedBooksController = require("../controllers/likedbooks");
 
 router.get("/", checkAuth, LikedBooksController.get_liked_books);
 
+router.get("/stats", checkAuth, LikedBooksController.get_liked_books_stats);
+
 router.post("/add", checkAuth, LikedBooksController.add_like);
 
 router.post("/remove", checkAuth, LikedBooksController.remove_like);

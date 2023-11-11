@@ -1,5 +1,73 @@
 const mongoose = require("mongoose");
 const LibraryBook = require("../models/librarybook");
+const { findMostFrequent } = require("../utils/utils");
+
+exports.get_library_books_stats = async (req, res, next) => {
+  try {
+    const librarybooks = await LibraryBook.find({
+      userId: req.userData.userId,
+    });
+
+    const subjectsArray = [];
+    let readCounter = 0;
+    librarybooks.forEach((element) => {
+      if (element.isRead === true) readCounter++;
+      subjectsArray.push(...element.book.bookDetails.subjects);
+    });
+
+    const authorsArray = [];
+
+    librarybooks.forEach((element) => {
+      authorsArray.push(element.book.authorDetails.name);
+    });
+
+    res.status(200).json({
+      topSubjects: findMostFrequent(subjectsArray),
+      topAuthors: findMostFrequent(authorsArray),
+      totalAmount: librarybooks.length,
+      readAmount: readCounter,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: err,
+    });
+  }
+};
+
+exports.update_library_book = async (req, res, next) => {
+  try {
+    if (req.body.bookUrl) {
+      const librarybookcopy = await LibraryBook.findOne({
+        userId: req.userData.userId,
+        bookUrl: req.body.bookUrl,
+      });
+
+      if (!librarybookcopy) {
+        return res.status(404).json({
+          message: "Book is not in your library",
+        });
+      }
+
+      librarybookcopy.isRead = req.body.isRead;
+      const result = await librarybookcopy.save();
+
+      res.status(200).json({
+        message: "Updated with success",
+        updatedBook: result,
+      });
+    } else {
+      res.status(403).json({
+        message: "Wrong request",
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+};
 
 exports.get_books_from_library = async (req, res, next) => {
   try {
@@ -47,6 +115,7 @@ exports.add_book_to_library = async (req, res, next) => {
         userId: req.userData.userId,
         bookUrl: req.body.bookUrl,
         book: req.body.book,
+        isRead: false,
       });
 
       const result = await like.save();
@@ -103,7 +172,6 @@ exports.remove_book_from_library = async (req, res, next) => {
 
 exports.check_book_in_library = async (req, res, next) => {
   try {
-    console.log("HELLo");
     const bookUrl = req.body.bookUrl;
     const userId = req.userData.userId;
 

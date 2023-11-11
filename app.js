@@ -40,8 +40,7 @@ app.use((req, res, next) => {
       "PATCH",
       "POST",
       "GET",
-      "DELETE",
-      "OPTIONS"
+      "DELETE"
     );
     return res.status(200).json({});
   }

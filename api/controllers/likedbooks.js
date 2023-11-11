@@ -1,5 +1,35 @@
 const mongoose = require("mongoose");
 const LikedBook = require("../models/likedbook");
+const { findMostFrequent } = require("../utils/utils");
+
+exports.get_liked_books_stats = async (req, res, next) => {
+  try {
+    const likedbooks = await LikedBook.find({ userId: req.userData.userId });
+
+    const subjectsArray = [];
+
+    likedbooks.forEach((element) => {
+      subjectsArray.push(...element.book.bookDetails.subjects);
+    });
+
+    const authorsArray = [];
+
+    likedbooks.forEach((element) => {
+      authorsArray.push(element.book.authorDetails.name);
+    });
+
+    res.status(200).json({
+      topSubjects: findMostFrequent(subjectsArray),
+      topAuthors: findMostFrequent(authorsArray),
+      totalAmount: likedbooks.length,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 exports.get_liked_books = async (req, res, next) => {
   try {

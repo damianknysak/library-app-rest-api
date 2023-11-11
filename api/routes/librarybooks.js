@@ -6,6 +6,10 @@ const LibraryBooksController = require("../controllers/librarybooks");
 
 router.get("", checkAuth, LibraryBooksController.get_books_from_library);
 
+router.get("/stats", checkAuth, LibraryBooksController.get_library_books_stats);
+
+router.post("/update", checkAuth, LibraryBooksController.update_library_book);
+
 router.post("/add", checkAuth, LibraryBooksController.add_book_to_library);
 
 router.post(
