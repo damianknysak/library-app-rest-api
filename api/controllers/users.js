@@ -29,8 +29,12 @@ exports.add_profile_image = async (req, res, next) => {
       user.profileImage &&
       user.profileImage !== "images/default.png"
     ) {
-      // If a previous profile image exists and is not the default one, delete it
-      await fs.unlink(user.profileImage);
+      try {
+        // If a previous profile image exists and is not the default one, delete it, BUT DOESNT RESPOND WITH ERROR
+        await fs.unlink(user.profileImage);
+      } catch (e) {
+        console.error("Old image not found");
+      }
     }
 
     const result = await User.updateOne(
