@@ -9,7 +9,8 @@ exports.get_liked_books_stats = async (req, res, next) => {
     const subjectsArray = [];
 
     likedbooks.forEach((element) => {
-      subjectsArray.push(...element.book.bookDetails.subjects);
+      if (Array.isArray(element.book.bookDetails.subjects))
+        subjectsArray.push(...element.book.bookDetails.subjects);
     });
 
     const authorsArray = [];
@@ -71,7 +72,6 @@ exports.add_like = async (req, res, next) => {
           message: "Book already liked",
         });
       }
-      console.log(req.body);
       const like = new LikedBook({
         _id: new mongoose.Types.ObjectId(),
         userId: req.userData.userId,
@@ -133,7 +133,6 @@ exports.remove_like = async (req, res, next) => {
 
 exports.check_like = async (req, res, next) => {
   try {
-    console.log("HELLo");
     const bookUrl = req.body.bookUrl;
     const userId = req.userData.userId;
 

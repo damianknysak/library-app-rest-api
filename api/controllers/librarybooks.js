@@ -12,7 +12,9 @@ exports.get_library_books_stats = async (req, res, next) => {
     let readCounter = 0;
     librarybooks.forEach((element) => {
       if (element.isRead === true) readCounter++;
-      subjectsArray.push(...element.book.bookDetails.subjects);
+      if (Array.isArray(element.book.bookDetails.subjects)) {
+        subjectsArray.push(...element.book.bookDetails.subjects);
+      }
     });
 
     const authorsArray = [];
