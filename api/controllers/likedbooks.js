@@ -1,6 +1,63 @@
 const mongoose = require("mongoose");
 const LikedBook = require("../models/likedbook");
-const { findMostFrequent } = require("../utils/utils");
+const { findMostFrequent, formatStringForQuery } = require("../utils/utils");
+
+exports.get_recommendations = async (req, res, next) => {
+  try {
+    const userId = req.userData.userId;
+
+    const likedbooks = await LikedBook.find({ userId: userId });
+
+    const subjectsArray = [];
+
+    likedbooks.forEach((element) => {
+      if (Array.isArray(element.book.bookDetails.subjects))
+        subjectsArray.push(...element.book.bookDetails.subjects);
+    });
+
+    const topSubjects = findMostFrequent(subjectsArray).map(
+      (element) => element.el
+    );
+
+    const booksSubjectsArray = [];
+
+    for (const subject of topSubjects) {
+      const response = await fetch(
+        `https://openlibrary.org/subjects/${formatStringForQuery(
+          subject
+        )}.json?limit=5`
+      );
+      const responseJson = await response.json();
+      booksSubjectsArray.push(responseJson.works);
+    }
+
+    const recommendedBooksArray = [];
+
+    for (const recommendedBook of booksSubjectsArray.flat(1)) {
+      const alreadyLikedRecommendedBooks = await LikedBook.findOne({
+        userId: userId,
+        bookUrl: recommendedBook.key,
+      });
+      if (
+        !alreadyLikedRecommendedBooks &&
+        !recommendedBooksArray.some((el) => el.key === recommendedBook.key)
+      ) {
+        recommendedBooksArray.push(recommendedBook);
+      }
+    }
+
+    res.status(200).json({
+      recommendedBooks: recommendedBooksArray,
+      length: recommendedBooksArray.length,
+      userId: userId,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: err,
+    });
+  }
+};
 
 exports.get_liked_books_stats = async (req, res, next) => {
   try {

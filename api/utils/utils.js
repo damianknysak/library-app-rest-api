@@ -17,3 +17,7 @@ exports.findMostFrequent = (arr1) => {
 
   return top5;
 };
+
+exports.formatStringForQuery = (str) => {
+  return str.replaceAll(" ", "_").toLowerCase();
+};
