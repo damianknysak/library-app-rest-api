@@ -82,7 +82,7 @@ exports.get_books_from_library = async (req, res, next) => {
       },
       null,
       { skip: LIMIT * PAGE, limit: LIMIT }
-    );
+    ).sort({ _id: -1 });
 
     res.status(200).json({
       message: "List of books in /librarybooks",

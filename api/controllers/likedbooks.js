@@ -100,8 +100,7 @@ exports.get_liked_books = async (req, res, next) => {
       },
       null,
       { skip: LIMIT * PAGE, limit: LIMIT }
-    );
-
+    ).sort({ _id: -1 });
     res.status(200).json({
       message: "List of books in /likedbooks",
       page: PAGE < 1 ? 1 : PAGE + 1,
