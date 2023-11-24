@@ -21,7 +21,7 @@ exports.add_profile_image = async (req, res, next) => {
   try {
     const id = req.userData.userId;
     const newProfileImage = req.file.path;
-
+    console.log("CZCZZZZ");
     // Check if a previous profile image exists
     const user = await User.findOne({ _id: id });
     if (
