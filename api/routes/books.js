@@ -7,6 +7,19 @@ const BooksController = require("../controllers/books");
 
 router.post("/", checkAuth, BooksController.add_book);
 
+router.get("/test", (req, res, next) => {
+  try {
+    res.status(200).json({
+      message: "Test works",
+    });
+  } catch (e) {
+    res.status(500).json({
+      message: e,
+    });
+  }
+});
+
+
 router.get("/", checkAuth, (req, res, next) => {
   try {
     res.status(200).json({

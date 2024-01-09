@@ -1,5 +1,9 @@
 const express = require("express");
 const app = express();
+const cors = require('cors');
+
+//allow all cors
+app.use(cors())
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -24,28 +28,6 @@ app.use(
   })
 );
 app.use(bodyParser.json());
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, Accept"
-  );
-  res.header("Access-Control-Allow-Credentials", true);
-  //browser options request
-  if (req.method === "OPTIONS") {
-    res.header(
-      "Access-Control-Allow-Methods",
-      "PUT",
-      "PATCH",
-      "POST",
-      "GET",
-      "DELETE"
-    );
-    return res.status(200).json({});
-  }
-  next();
-});
 
 //public images
 app.use("/images", express.static("images"));
